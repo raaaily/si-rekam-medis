@@ -283,7 +283,7 @@
 
             {{-- TAB 4: TINDAKAN & OBAT --}}
             <div id="tab-procmed" class="tab-panel hidden">
-                <h2 class="font-semibold mb-3">Tindakan</h2>
+                <!-- <h2 class="font-semibold mb-3">Tindakan</h2> -->
 
                 {{-- Tindakan dynamic --}}
                 <div class="mb-6">
