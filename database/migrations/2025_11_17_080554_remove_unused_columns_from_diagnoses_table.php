@@ -6,25 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('diagnoses', function (Blueprint $table) {
-            $table->dropColumn(['kode', 'non_spesialis', 'kasus']);
+            if (Schema::hasColumn('diagnoses', 'kode')) {
+                $table->dropColumn('kode');
+            }
+            if (Schema::hasColumn('diagnoses', 'non_spesialis')) {
+                $table->dropColumn('non_spesialis');
+            }
+            if (Schema::hasColumn('diagnoses', 'kasus')) {
+                $table->dropColumn('kasus');
+            }
         });
     }   
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('diagnoses', function (Blueprint $table) {
-            $table->string('kode')->nullable();
-            $table->boolean('non_spesialis')->default(false);
-            $table->enum('kasus', ['baru', 'lama'])->nullable();
+            if (!Schema::hasColumn('diagnoses', 'kode')) {
+                $table->string('kode')->nullable();
+            }
+            if (!Schema::hasColumn('diagnoses', 'non_spesialis')) {
+                $table->boolean('non_spesialis')->default(false);
+            }
+            if (!Schema::hasColumn('diagnoses', 'kasus')) {
+                $table->enum('kasus', ['baru', 'lama'])->nullable();
+            }
         });
     }
 };
