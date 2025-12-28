@@ -6,27 +6,39 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('procedures', function (Blueprint $table) {
-            // 1. Drop foreign key (nama otomatis: procedures_petugas_id_foreign)
-            $table->dropForeign(['petugas_id']);
+            // Drop foreign key jika ada
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $doctrineTable = $sm->listTableDetails('procedures');
 
-            // 2. Baru drop kolom
-            $table->dropColumn(['total', 'petugas_id']);
+            if ($doctrineTable->hasForeignKey('procedures_petugas_id_foreign')) {
+                $table->dropForeign(['petugas_id']);
+            }
+
+            // Drop kolom jika ada
+            $columnsToRemove = ['total', 'petugas_id'];
+            foreach ($columnsToRemove as $column) {
+                if (Schema::hasColumn('procedures', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
         Schema::table('procedures', function (Blueprint $table) {
-            $table->decimal('total', 12, 2)->nullable();
-            $table->foreignId('petugas_id')->nullable()->constrained('users')->onDelete('set null');
+            if (!Schema::hasColumn('procedures', 'total')) {
+                $table->decimal('total', 12, 2)->nullable();
+            }
+            if (!Schema::hasColumn('procedures', 'petugas_id')) {
+                $table->foreignId('petugas_id')
+                      ->nullable()
+                      ->constrained('users')
+                      ->onDelete('set null');
+            }
         });
     }
 };
