@@ -9,7 +9,7 @@ class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
         Login::class => [
-            // tidak perlu listener class, pakai closure
+            // listener kosong, pakai closure
         ],
     ];
 
